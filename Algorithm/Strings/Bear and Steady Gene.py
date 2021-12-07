@@ -36,7 +36,7 @@ def steadyGene(gene):
         for i in range(4):
             if count[len(count) - 1][i] - count[right][i] <= stan:
                 tempCount += 1
-        if tempCount == 4:
+        if tempCount == 4 and right != 0:
             while left < right:
                 secondtemp = 0
                 for i in range(4):
@@ -50,6 +50,8 @@ def steadyGene(gene):
                 minLength = right - left + 1
             elif minLength > right - left + 1:
                 minLength = right - left + 1
+        elif tempCount == 4 and right == 0:
+            return 0
 
         right += 1
 
