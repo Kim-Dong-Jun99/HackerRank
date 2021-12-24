@@ -6,6 +6,38 @@ import random
 import re
 import sys
 
+
+def buildBCT(pattern, bct):
+    for i in range(len(pattern)):
+        bct[ord(pattern[i]) - 97] = i
+
+
+def buildGST(pattern, gst, suffix):
+    patternSize = len(pattern)
+    # suffix = [ 0 for i in range(patternSize+1)]
+    # gst = [0 for i in range(patternSize+1)]
+
+    # case 1
+    i = patternSize
+    j = i + 1
+    suffix[i] = j
+    while 0 < i:
+        while j <= patternSize and pattern[i - 1] != pattern[j - 1]:
+            if gst[j] == 0:
+                gst[j] = j - i
+            j = suffix[j]
+        i -= 1
+        j -= 1
+        suffix[i] = j
+
+    # case 2
+    for i in range(patternSize + 1):
+        if gst[i] == 0:
+            gst[i] = j
+        if i == j:
+            j = suffix[j]
+
+
 if __name__ == '__main__':
     n = int(input().strip())
 
@@ -34,26 +66,23 @@ if __name__ == '__main__':
                 value += searched[targetGenes[i]] * values[i]
             else:
                 appear = 0
-                kmpTable = [-1, 0]
-                for j in range(2, len(targetGenes[i]) + 1):
-                    mid = int(j / 2)
-                    while 0 < mid:
-                        if targetGenes[i][:mid] == targetGenes[i][j - mid:j]:
-                            break
-                        else:
-                            mid -= 1
-                    kmpTable.append(mid)
+                patternSize = len(targetGenes[i])
+                bct = [-1 for i in range(26)]
+                suffix = [0 for i in range(patternSize + 1)]
+                gst = [0 for i in range(patternSize + 1)]
+                buildGST(targetGenes[i], gst, suffix)
+                buildBCT(targetGenes[i], bct)
+
                 j = 0
-                while j + len(targetGenes[i]) <= len(d):
-                    temp = d[j:j + len(targetGenes[i])]
-                    for k in range(len(temp) + 1):
-                        if k == len(temp):
-                            appear += 1
-                            j += k - kmpTable[k]
-                            break
-                        elif targetGenes[i][k] != temp[k]:
-                            j += k - kmpTable[k]
-                            break
+                while j + patternSize <= len(d):
+                    k = patternSize - 1
+                    while 0 <= k and targetGenes[i][k] == d[j + k]:
+                        k -= 1
+                    if k < 0:
+                        appear += 1
+                        j += max(gst[k + 1], k - bct[ord(d[j + k]) - 97])
+                    else:
+                        j += max(gst[k + 1], k - bct[ord(d[j + k]) - 97])
 
                 searched[targetGenes[i]] = appear
                 value += appear * values[i]
