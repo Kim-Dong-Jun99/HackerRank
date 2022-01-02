@@ -18,48 +18,63 @@ import sys
 
 def cutTheTree(data, edges):
     # Write your code here
-    graph = [[] for j in range(len(data) + 1)]
+    print(sum(data))
+    data.insert(0, 0)
+    graph = [[] for j in range(len(data))]
     for i in edges:
         graph[i[0]].append(i[1])
         graph[i[1]].append(i[0])
-    level = [0 for i in range(len(data) + 1)]
-    init = 1
-    nextV = [1]
-    visited = [0 for i in range(len(data) + 1)]
-    totalSum = 0
-    while nextV:
-        temp = []
-        for i in nextV:
-            level[i] = init
-            visited[i] = 1
-            totalSum += data[i - 1]
-            for j in graph[i]:
-                if visited[j] == 0:
-                    temp.append(j)
-        nextV = temp
-        init += 1
-    minDif = None
-    # for i in edges:
-    #     if level[i[0]] > level[i[1]]:
-    #         nextV = [i[0]]
-    #     else:
-    #         nextV = [i[1]]
-    #     tempSum = 0
-    #     while nextV:
-    #         temp = []
-    #         for i in nextV:
-    #             tempSum += data[i-1]
-    #             for j in graph[i]:
-    #                 if level[j] > level[i]:
-    #                     temp.append(j)
-    #         nextV = temp
-    #     if minDif == None:
-    #         minDif = abs(totalSum-tempSum - tempSum)
-    #     else:
-    #         if minDif > abs(totalSum-tempSum-tempSum):
-    #             minDif = abs(totalSum-tempSum-tempSum)
+    visited = [0 for i in range(len(data))]
+    cur = 1
+    visited[1] = 1
+    stack = []
+    traveled = 1
 
-    return minDif
+    while traveled < len(data) - 1 or stack != []:
+
+        canF = False
+        for i in graph[cur]:
+
+            if visited[i] == 0:
+                stack.append(cur)
+                visited[i] = 1
+                cur = i
+                traveled += 1
+                canF = True
+                break
+        if canF == False:
+            data[stack[len(stack) - 1]] += data[cur]
+            cur = stack.pop()
+            # if stack == []:
+            #     break
+
+    totalSum = data[1]
+    print(totalSum)
+    minDiff = None
+    revisit = [0 for i in range(len(data))]
+    cur = 1
+    revisit[1] = 1
+    traveled = 1
+    while stack != [] or traveled < len(data) - 1:
+        canF = False
+        for i in graph[cur]:
+            if revisit[i] == 0:
+                temp = abs(totalSum - data[i] - data[i])
+                if minDiff == None:
+                    minDiff = temp
+                elif minDiff > temp:
+                    minDiff = temp
+                stack.append(cur)
+                traveled += 1
+                revisit[i] = 1
+                cur = i
+                canF = True
+                break
+        if canF == False:
+            cur = stack.pop()
+            # if stack == []:
+            #     break
+    return minDiff
 
 
 if __name__ == '__main__':
