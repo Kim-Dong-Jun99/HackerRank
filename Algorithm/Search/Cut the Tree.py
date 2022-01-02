@@ -25,39 +25,39 @@ def cutTheTree(data, edges):
     level = [0 for i in range(len(data) + 1)]
     init = 1
     nextV = [1]
-    visited = []
+    visited = [0 for i in range(len(data) + 1)]
     totalSum = 0
     while nextV:
         temp = []
         for i in nextV:
             level[i] = init
-            visited.append(i)
+            visited[i] = 1
             totalSum += data[i - 1]
             for j in graph[i]:
-                if (j not in visited):
+                if visited[j] == 0:
                     temp.append(j)
         nextV = temp
         init += 1
     minDif = None
-    for i in edges:
-        if level[i[0]] > level[i[1]]:
-            nextV = [i[0]]
-        else:
-            nextV = [i[1]]
-        tempSum = 0
-        while nextV:
-            temp = []
-            for i in nextV:
-                tempSum += data[i - 1]
-                for j in graph[i]:
-                    if level[j] > level[i]:
-                        temp.append(j)
-            nextV = temp
-        if minDif == None:
-            minDif = abs(totalSum - tempSum - tempSum)
-        else:
-            if minDif > abs(totalSum - tempSum - tempSum):
-                minDif = abs(totalSum - tempSum - tempSum)
+    # for i in edges:
+    #     if level[i[0]] > level[i[1]]:
+    #         nextV = [i[0]]
+    #     else:
+    #         nextV = [i[1]]
+    #     tempSum = 0
+    #     while nextV:
+    #         temp = []
+    #         for i in nextV:
+    #             tempSum += data[i-1]
+    #             for j in graph[i]:
+    #                 if level[j] > level[i]:
+    #                     temp.append(j)
+    #         nextV = temp
+    #     if minDif == None:
+    #         minDif = abs(totalSum-tempSum - tempSum)
+    #     else:
+    #         if minDif > abs(totalSum-tempSum-tempSum):
+    #             minDif = abs(totalSum-tempSum-tempSum)
 
     return minDif
 
