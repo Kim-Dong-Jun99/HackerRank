@@ -19,9 +19,9 @@ def equal(arr):
     minus = min(arr)
     for i in range(len(arr)):
         arr[i] = arr[i] - minus
-    calc = [0 for i in range(max(arr) + 1)]
+    calc = [0 for i in range(max(arr) + 6)]
 
-    for i in range(1, max(arr) + 1):
+    for i in range(1, max(arr) + 6):
         if i == 1:
             calc[i] = 1
         elif i == 2:
@@ -30,10 +30,14 @@ def equal(arr):
             calc[i] = 1
         else:
             calc[i] = getMin(calc, i) + 1
-    result = 0
-    for i in arr:
-        result += calc[i]
-    return result
+    results = []
+    cases = [0, 1, 2, 5]
+    for j in cases:
+        result = 0
+        for i in arr:
+            result += calc[i + j]
+        results.append(result)
+    return min(results)
 
 
 def getMin(calc, i):
